@@ -1,0 +1,1 @@
+freertps_add_executable(controller controller.c)
