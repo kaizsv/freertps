@@ -1,3 +1,4 @@
+#include <string.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -17,7 +18,7 @@ char *get_controller_ip()
 				sa = (struct sockaddr_in *) ifap->ifa_addr;
 				addr = inet_ntoa(sa->sin_addr);
 				// ignore local ip
-				if (strcmp(addr, LOCAL_IP) != 0 & r_addr == NULL) {
+				if ((strcmp(addr, LOCAL_IP) != 0) & (r_addr == NULL)) {
 					r_addr = malloc(1 + strlen(addr));
 					strcpy(r_addr, addr);
 				}
