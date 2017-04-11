@@ -6,18 +6,24 @@
 void (*choose_terminal_function(char *))(Terminal *);
 static void exec_ST_terminal(Terminal *);
 
-Terminal *init_terminal(char *cid, uint8_t did, char *type, uint8_t tid,
+TerminalInfo *init_info(char *cid, uint8_t did, char *type, uint8_t tid,
                         unsigned int address)
 {
+    TerminalInfo *info = (TerminalInfo *) malloc(sizeof(TerminalInfo));
+    info->cid = cid;
+    info->did = did;
+    info->type = type;
+    info->tid = tid;
+    info->modbus_address = address;
+    info->classification = (*type == 'S') ? SENSOR :
+                           (*type == 'A') ? ACTUATOR : NONE;
+    return info;
+}
+
+Terminal *init_terminal(TerminalInfo *info)
+{
     Terminal *terminal = (Terminal *) malloc(sizeof(Terminal));
-    terminal->cid = cid;
-    terminal->did = did;
-    terminal->type = type;
-    terminal->tid = tid;
-    terminal->modbus_address = address;
-    terminal->classification = (*type == 'S') ? SENSOR :
-                               (*type == 'A') ? ACTUATOR : NONE;
-    terminal->exec = choose_terminal_function(type);
+    terminal->info = info;
     return terminal;
 }
 
