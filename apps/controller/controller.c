@@ -12,8 +12,7 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-    TerminalInfo *info = init_info("127.0.0.1", 1, "ST", 1, 40000);
-    Terminal *t = init_terminal(info);
+    Terminal *t = init_terminal("127.0.0.1", 1, "ST", 1, 40000);
 
 	return 0;
 }
