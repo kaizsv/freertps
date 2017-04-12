@@ -25,6 +25,7 @@ void choose_terminal_function(Terminal *t)
     } else if (strcmp(t->info->type, "AW") == 0) {
         // irrigation actuator
     } else {
+        // TODO
     }
 }
 
