@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -6,16 +7,17 @@
 
 char *get_controller_ip()
 {
-    struct ifaddrs *ifap;
+    struct ifaddrs *ifap, *ifa;
     struct sockaddr_in *sa;
     char *addr, *r_addr = NULL;
     const char *LOCAL_IP = "127.0.0.1";
 
     getifaddrs(&ifap);
-    while (ifap != NULL) {
-        if (ifap->ifa_addr->sa_family == AF_INET) { // if ipv4
-            if (ifap->ifa_addr) {
-                sa = (struct sockaddr_in *) ifap->ifa_addr;
+    ifa = ifap;
+    while (ifa != NULL) {
+        if (ifa->ifa_addr->sa_family == AF_INET) { // if ipv4
+            if (ifa->ifa_addr) {
+                sa = (struct sockaddr_in *) ifa->ifa_addr;
                 addr = inet_ntoa(sa->sin_addr);
                 // ignore local ip
                 if ((strcmp(addr, LOCAL_IP) != 0) & (r_addr == NULL)) {
@@ -24,7 +26,7 @@ char *get_controller_ip()
                 }
             }
         }
-        ifap = ifap->ifa_next;
+        ifa = ifa->ifa_next;
     }
     freeifaddrs(ifap);
     return r_addr;

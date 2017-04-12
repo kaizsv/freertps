@@ -7,7 +7,7 @@
 typedef struct __terminal_list TerminalList;
 struct __terminal_list
 {
-    Terminal terminal;
+    Terminal *terminal;
     TerminalList *next;
 };
 
@@ -23,7 +23,7 @@ struct __dac
 
 DAC *init_dac(uint8_t);
 
-void free_dac(DAC);
+void free_dac(DAC *);
 
 Terminal *get_dac_terminal_from_info(DAC *, TerminalInfo *);
 

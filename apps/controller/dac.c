@@ -6,10 +6,12 @@
 TerminalList *dac_sensors_or_actuators(DAC *, TerminalInfo *);
 TerminalList *init_terminal_list(Terminal *);
 void free_terminal_list(TerminalList *);
+void free_terminal_list_all(TerminalList *);
 
 DAC *init_dac(uint8_t did)
 {
     DAC *dac = (DAC *) malloc(sizeof(DAC));
+    dac->next = NULL;
     dac->did = did;
     dac->sensors = NULL;
     dac->actuators = NULL;
@@ -18,8 +20,8 @@ DAC *init_dac(uint8_t did)
 
 void free_dac(DAC *dac)
 {
-    free_terminal_list(dac->sensors);
-    free_terminal_list(dac->actuators);
+    free_terminal_list_all(dac->sensors);
+    free_terminal_list_all(dac->actuators);
     free(dac);
 }
 
@@ -29,13 +31,13 @@ Terminal *get_dac_terminal_from_info(DAC *dac, TerminalInfo *info)
 
     while (temp != NULL) {
         Terminal *terminal = temp->terminal;
-        if ((strcmp(terminal->cid, info->cid) == 0)
-            && (terminal->did == info->did)
-            && (strcmp(terminal->type, info->type) == 0)
-            && (terminal->tid == info->tid)
-            && (terminal->modbus_address == info->modbus_address))
+        if ((strcmp(terminal->info->cid, info->cid) == 0)
+            && (terminal->info->did == info->did)
+            && (strcmp(terminal->info->type, info->type) == 0)
+            && (terminal->info->tid == info->tid)
+            && (terminal->info->modbus_address == info->modbus_address))
         {
-            return temp;
+            return terminal;
         }
 
         temp = temp->next;
@@ -46,6 +48,7 @@ Terminal *get_dac_terminal_from_info(DAC *dac, TerminalInfo *info)
 void assign_terminal_to_dac(DAC *dac, Terminal *terminal)
 {
     if ((dac->sensors == NULL)
+        && (dac->did == terminal->info->did)
         && (terminal->info->classification == SENSOR))
     {
         dac->sensors = init_terminal_list(terminal);
@@ -53,6 +56,7 @@ void assign_terminal_to_dac(DAC *dac, Terminal *terminal)
     }
 
     if ((dac->actuators == NULL)
+        && (dac->did == terminal->info->did)
         && (terminal->info->classification == ACTUATOR))
     {
         dac->actuators = init_terminal_list(terminal);
@@ -60,14 +64,17 @@ void assign_terminal_to_dac(DAC *dac, Terminal *terminal)
     }
 
     TerminalList *temp = dac_sensors_or_actuators(dac, terminal->info);
-    if (temp == NULL) {
+    if ((temp == NULL) || (dac->did != terminal->info->did)) {
         // TODO: terminal type NONE
+        printf("Assigned invalid terminal to dac.\r\n");
+        return;
     }
 
-    while (temp != NULL) {
+    while (temp->next != NULL) {
         temp = temp->next;
     }
-    temp = init_terminal_list(terminal);
+
+    temp->next = init_terminal_list(terminal);
 }
 
 TerminalList *dac_sensors_or_actuators(DAC *dac, TerminalInfo *info)
@@ -93,10 +100,16 @@ TerminalList *init_terminal_list(Terminal *terminal)
 
 void free_terminal_list(TerminalList *t_list)
 {
+    free_terminal(t_list->terminal);
+    free(t_list);
+}
+
+void free_terminal_list_all(TerminalList *t_list)
+{
     TerminalList *temp = t_list;
     while (t_list != NULL) {
         temp = temp->next;
-        free(t_list);
+        free_terminal_list(t_list);
         t_list = temp;
     }
 }

@@ -24,6 +24,9 @@ void choose_terminal_function(Terminal *t)
         // sunlight
     } else if (strcmp(t->info->type, "AW") == 0) {
         // irrigation actuator
+        t->v_type = INT;
+        SET_VALUE(t, t->v_type, 0);
+        t->exec = exec_ST_terminal;
     } else {
         // TODO
     }
