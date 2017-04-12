@@ -75,6 +75,7 @@ float get_value_FLOAT(Terminal *terminal)
     return terminal->value.vf;
 }
 
+/*
 char *get_value_str_INT(Terminal *terminal)
 {
     // TODO: 10 digits is enough for sensor value,
@@ -94,6 +95,7 @@ char *get_value_str_FLOAT(Terminal *terminal)
     snprintf(buf, MAX_VALUE_DIGITS, "%.2f", terminal->value.vf);
     return buf;
 }
+*/
 
 static void exec_ST_terminal(Terminal *t)
 {

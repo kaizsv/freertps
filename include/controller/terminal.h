@@ -3,14 +3,23 @@
 
 #include <stdint.h>
 
-#define SET_VALUE(TERMINAL, V_TYPE, VALUE)      \
-            set_value_##V_TYPE(TERMINAL, VALUE)
+// TODO: modify me
+#define SET_VALUE(TERMINAL, V_TYPE, VALUE)              \
+            switch (V_TYPE) {                           \
+                case INT:                               \
+                    set_value_INT(TERMINAL, VALUE);     \
+                    break;                              \
+                case FLOAT:                             \
+                    set_value_FLOAT(TERMINAL, VALUE);   \
+                    break;                              \
+            }                                           \
 
 #define GET_VALUE(TERMINAL, V_TYPE)             \
             get_value_##V_TYPE(TERMINAL)
 
 #define GET_VALUE_STR(TERMINAL, V_TYPE)         \
             get_value_str_##V_TYPE(TERMINAL)
+
 
 typedef struct __terminal_info TerminalInfo;
 struct __terminal_info
@@ -25,7 +34,7 @@ struct __terminal_info
         SENSOR,
         ACTUATOR,
         NONE
-    } classification
+    } classification;
 };
 
 typedef struct __terminal_device Terminal;
@@ -51,13 +60,13 @@ void free_terminal(Terminal *);
 */
 void set_value_INT(Terminal *, int);
 int get_value_INT(Terminal *);
-char *get_value_str_INT(Terminal *);
+//char *get_value_str_INT(Terminal *);
 
 /*
     float function
 */
 void set_value_FLOAT(Terminal *, float);
 float get_value_FLOAT(Terminal *);
-char *get_value_str_FLOAT(Terminal *);
+//char *get_value_str_FLOAT(Terminal *);
 
 #endif // __TERMINAL_
