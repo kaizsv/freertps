@@ -32,7 +32,7 @@ endfunction()
 set(SYSTEM "native-posix" CACHE STRING "the target system name")
 message("system: [${SYSTEM}]")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -g -O0 -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11 -Wall -g -O0 -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -g -fPIC")
 # ament_export_definitions()....in the future
 

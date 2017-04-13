@@ -3,16 +3,10 @@
 
 #include <stdint.h>
 
-// TODO: modify me
 #define SET_VALUE(TERMINAL, V_TYPE, VALUE)              \
-            switch (V_TYPE) {                           \
-                case INT:                               \
-                    set_value_INT(TERMINAL, VALUE);     \
-                    break;                              \
-                case FLOAT:                             \
-                    set_value_FLOAT(TERMINAL, VALUE);   \
-                    break;                              \
-            }                                           \
+            _Generic((VALUE),                           \
+                int: set_value_INT,                     \
+                float: set_value_FLOAT)(TERMINAL, VALUE)
 
 #define GET_VALUE(TERMINAL, V_TYPE)             \
             get_value_##V_TYPE(TERMINAL)
