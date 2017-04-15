@@ -11,7 +11,6 @@ void free_terminal_list_all(TerminalList *);
 DAC *init_dac(uint8_t did)
 {
     DAC *dac = (DAC *) malloc(sizeof(DAC));
-    dac->next = NULL;
     dac->did = did;
     dac->sensors = NULL;
     dac->actuators = NULL;

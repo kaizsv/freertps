@@ -1,5 +1,5 @@
-#ifndef __HELPER_
-#define __HELPER_
+#ifndef __GET_IP_
+#define __GET_IP_
 
 #include <stdio.h>
 

@@ -3,7 +3,7 @@
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include "controller/helper.h"
+#include "controller/get_ip.h"
 
 char *get_controller_ip()
 {

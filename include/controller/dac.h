@@ -14,7 +14,6 @@ struct __terminal_list
 typedef struct __dac DAC;
 struct __dac
 {
-    DAC *next;
     uint8_t did;
 
     TerminalList *sensors;

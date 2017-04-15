@@ -1,5 +1,5 @@
 add_library(irrigation 
-    helper.c
+    get_ip.c
     terminal.c
     dac.c
     )
