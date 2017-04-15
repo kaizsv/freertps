@@ -28,4 +28,6 @@ Terminal *get_dac_terminal_from_info(DAC *, TerminalInfo *);
 
 void assign_terminal_to_dac(DAC *, Terminal *);
 
+void exec_terminals_of_dac(DAC *);
+
 #endif // __DAC_

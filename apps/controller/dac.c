@@ -7,6 +7,25 @@ TerminalList *dac_sensors_or_actuators(DAC *, TerminalInfo *);
 TerminalList *init_terminal_list(Terminal *);
 void free_terminal_list(TerminalList *);
 void free_terminal_list_all(TerminalList *);
+void exec_terminal(TerminalList *);
+
+void exec_terminals_of_dac(DAC *dac)
+{
+    printf("%d\n", dac->did);
+
+    exec_terminal(dac->sensors);
+    exec_terminal(dac->actuators);
+}
+
+void exec_terminal(TerminalList *terminal_list)
+{
+    Terminal *curr;
+    while (terminal_list != NULL) {
+        curr = terminal_list->terminal;
+        curr->exec(curr);
+        terminal_list = terminal_list->next;
+    }
+}
 
 DAC *init_dac(uint8_t did)
 {

@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include "freertps/freertps.h"
 #include "controller/get_ip.h"
 #include "controller/terminal.h"
 #include "controller/dac.h"
+
+// SIGINT handler
+static volatile sig_atomic_t sigint_status;
+static void sigint_handler(int signo)
+{
+    sigint_status = signo;
+}
 
 // dac list
 typedef struct __dac_list DACList;
@@ -13,20 +21,20 @@ struct __dac_list
     DAC *dac;
 };
 
-// scanning if there are new device or removing device
-void scann_dac_and_terminal(DACList **, char *);
-
 DACList *init_dac_list(DAC *);
 void append_dac_to_dac_list(DACList **, DAC *);
 void free_dac_list(DACList *);
 void free_dac_list_all(DACList *);
 // dac list
 
+// scanning if there are new device or removing device
+void scann_dac_and_terminal(DACList **, char *);
+
 void scann_dac_and_terminal(DACList **dac_list, char *cid)
 {
     DAC *dac = init_dac(1);
     Terminal *t1 = init_terminal(cid, 1, "ST", 1, 40000);
-    Terminal *t2 = init_terminal(cid, 1, "ST", 2, 40001);
+    Terminal *t2 = init_terminal(cid, 1, "SH", 2, 40001);
     Terminal *t3 = init_terminal(cid, 1, "AW", 3, 40002);
     assign_terminal_to_dac(dac, t1);
     assign_terminal_to_dac(dac, t2);
@@ -41,15 +49,35 @@ void scann_dac_and_terminal(DACList **dac_list, char *cid)
 
 int main(int argc, char **argv)
 {
+    // set sigint
+    if (signal(SIGINT, sigint_handler) == SIG_ERR) {
+        fprintf(stderr, "Cannot handle SIGINT\n");
+        exit(-1);
+    }
+
+    // get controller ip
     char *cid = get_controller_ip();
     if (cid == NULL) {
         fprintf(stderr, "The controller has no IP, please check again\n");
         exit(-1);
     }
 
+    // init dac list
     DACList *dac_list = NULL;
     scann_dac_and_terminal(&dac_list, cid);
 
+    // start main loop
+    DAC *current_dac;
+    DACList *current_dac_list;
+    while (!sigint_status) {
+        current_dac_list = dac_list;
+        while (current_dac_list != NULL) {
+            current_dac = current_dac_list->dac;
+            exec_terminals_of_dac(current_dac);
+
+            current_dac_list = current_dac_list->next;
+        }
+    }
 
     // free all memory
     free_dac_list_all(dac_list);

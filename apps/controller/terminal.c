@@ -1,36 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include "controller/terminal.h"
+#include "controller/exec_terminal.h"
 
 #define MAX_VALUE_DIGITS 10
-
-static void exec_ST_terminal(Terminal *);
-
-void choose_terminal_function(Terminal *t)
-{
-    if (strcmp(t->info->type, "ST") == 0) {
-        // air temperature
-        t->v_type = FLOAT;
-        SET_VALUE(t, t->v_type, 0.0f);
-        t->exec = exec_ST_terminal;
-    } else if (strcmp(t->info->type, "SH") == 0) {
-        // air humidity
-    } else if (strcmp(t->info->type, "SHE") == 0) {
-        // soil temperature
-    } else if (strcmp(t->info->type, "SPH") == 0) {
-        // soil ph
-    } else if (strcmp(t->info->type, "SI") == 0) {
-        // sunlight
-    } else if (strcmp(t->info->type, "AW") == 0) {
-        // irrigation actuator
-        t->v_type = INT;
-        SET_VALUE(t, t->v_type, 0);
-        t->exec = exec_ST_terminal;
-    } else {
-        // TODO
-    }
-}
 
 Terminal *init_terminal(char *cid, uint8_t did, char *type, uint8_t tid,
                         unsigned int address)
@@ -42,6 +15,8 @@ Terminal *init_terminal(char *cid, uint8_t did, char *type, uint8_t tid,
     info->type = type;
     info->tid = tid;
     info->modbus_address = address;
+    // if first charactor of type is 'S', then it is sensor
+    // else 'A' for actuator
     info->classification = (*type == 'S') ? SENSOR :
                            (*type == 'A') ? ACTUATOR : NONE;
 
@@ -100,8 +75,3 @@ char *get_value_str_FLOAT(Terminal *terminal)
     return buf;
 }
 */
-
-static void exec_ST_terminal(Terminal *t)
-{
-    printf("TEST\r\n");
-}
