@@ -5,6 +5,9 @@
 #include "controller/get_ip.h"
 #include "controller/terminal.h"
 #include "controller/dac.h"
+#include "controller/device_manager.h"
+
+#define USAGE "usage: ./controller [<rpc_ip>]\n"
 
 // SIGINT handler
 static volatile sig_atomic_t sigint_status;
@@ -49,6 +52,15 @@ void scann_dac_and_terminal(DACList **dac_list, char *cid)
 
 int main(int argc, char **argv)
 {
+    /*
+    // rpc ip
+    if (argc < 2) {
+        fprintf(stderr, USAGE);
+        exit(-1);
+    }
+    char *rpc_ip = argv[1];
+    */
+
     // set sigint
     if (signal(SIGINT, sigint_handler) == SIG_ERR) {
         fprintf(stderr, "Cannot handle SIGINT\n");
@@ -64,11 +76,13 @@ int main(int argc, char **argv)
 
     // init dac list
     DACList *dac_list = NULL;
+    DeviceManager *dm = init_device_manager();
     scann_dac_and_terminal(&dac_list, cid);
 
     // start main loop
     DAC *current_dac;
     DACList *current_dac_list;
+    // main loop can be stop by SIGINT
     while (!sigint_status) {
         current_dac_list = dac_list;
         while (current_dac_list != NULL) {
