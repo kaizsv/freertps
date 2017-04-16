@@ -1,5 +1,5 @@
-#ifndef __IMPL_TERMINAL_
-#define __IMPL_TERMINAL_
+#ifndef __EXEC_TERMINAL_
+#define __EXEC_TERMINAL_
 
 #include "controller/terminal.h"
 
@@ -11,4 +11,4 @@ void exec_SH_terminal(Terminal *);
 
 void exec_AW_terminal(Terminal *);
 
-#endif // __IMPL_TERMINAL_
+#endif // __EXEC_TERMINAL_
